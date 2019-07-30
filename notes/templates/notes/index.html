@@ -1,94 +1,109 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html lang=en class="no-js">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>Nice Notes</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static 'notes/vendor/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'notes/vendor/pure.min.css' %}">
+    <link rel="stylesheet" href="{% static 'notes/vendor/jquery-ui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'notes/css/styles.css' %}">
     <script type="text/html" id="login-template">
-        <h2>Login</h2>
-        <form action="" method="post">
-          <label for="id_username">Mobile</label>
-          <input id="id_username" type="text" maxlength="10" name="username" required>
-          <label for="id_password">Password</label>
-          <input id="id_password" type="password" name="password" required>
-          <input type="submit" value="Login">
+        <form class="pure-form pure-form-stacked" action="" method="post">
+          <fieldset>
+            <legend>Login</legend>
+            <label for="id_username">Mobile</label>
+            <input id="id_username" type="text" maxlength="10" name="username" required>
+            <label for="id_login_password">Password</label>
+            <input id="id_login_password" type="password" name="password" required>
+            <input class="pure-button pure-button-primary" type="submit" value="Login">
+          </fieldset>
         </form>
     </script>
     <script type="text/html" id="register-template">
-        <h2>Register</h2>
-        <form action="" method="post">
-          <label for="id_mobile">Mobile</label>
-          <input id="id_mobile" type="text" maxlength="10" name="mobile" required>
-          <label for="id_full_name">Full Name</label>
-          <input id="id_full_name" type="text" maxlength="30" name="full_name" required>
-          <label for="id_password">Password</label>
-          <input id="id_password" type="password" name="password" required>
-          <input type="submit" value="Login">
+        <form class="pure-form pure-form-stacked" action="" method="post">
+          <fieldset>
+            <legend>Register</legend>
+            <label for="id_mobile">Mobile</label>
+            <input id="id_mobile" type="text" maxlength="10" name="mobile" required>
+            <label for="id_full_name">Full Name</label>
+            <input id="id_full_name" type="text" maxlength="30" name="full_name" required>
+            <label for="id_password">Password</label>
+            <input id="id_password" type="password" name="password" required>
+            <input class="pure-button pure-button-primary" type="submit" value="Register">
+          </fieldset>
         </form>
     </script>
     <script type="text/html" id="header-template">
-      <h1>Nice Notes </h1>
+      <div class="pure-menu custom-menu">
+        <h1 class="pure-menu-heading custom-menu-heading">Nice Notes</h1>
       <% if (authenticated) { %>
-        <nav>
-          <a id="new-note" href="#">Add Note</a>
-          <a href="#">Your Notes</a>
-          <a href="#shared">Shared Notes</a>
-          <a id="logout" href="#">Logout</a>
-        </nav>
+          <nav class="pure-menu-list custom-menu-list">
+            <li class="pure-menu-item <% if (location.hash === '') { %>custom-menu-selected<% } %>">
+              <a class="pure-menu-link custom-menu-link" href="#">Your Notes</a>
+            </li>
+            <li class="pure-menu-item <% if (location.hash === '#shared') { %>custom-menu-selected<% } %>">
+              <a class="pure-menu-link custom-menu-link" href="#shared">Shared Notes</a>
+            </li>
+            <li class="pure-menu-item">
+              <a class="pure-menu-link custom-menu-link" id="logout" href="#">Logout</a>
+            </li>
+          </nav>
       <% } %>
+      </div>
     </script>
     <script type="text/html" id="notes-template">
       <h2><%- title %></h2>
-          <div class="notes">
+      <% if (!sharedView) { %>
+        <button class="pure-button pure-button-primary" id="new-note">Add Note</button>
+      <% } %>
+          <div class="pure-g notes">
         <% if (notes !== null && notes.length !== 0) { %>
           <% _.each(notes.models, function(note){ %>
-            <div class="note" data-id="<%- note.get('id') %>">
+            <div class="pure-u-1 note" data-id="<%- note.get('id') %>">
               <p class="content"><%- note.get('content') %></p>
               <p>
                 <span>Created: <%- note.get('createdon') %></span>
                 <span>Modified: <%- note.get('modifiedon') %></span>
               </p>
               <% if (!sharedView || note.get('access') === 'edit') { %>
-              <button class="ui-button ui-widget ui-corner-all edit-note">Edit</button>
+              <button class="pure-button pure-button-primary edit-note">Edit</button>
               <% } %>
-              <% if (!sharedView) { %><button class="ui-button ui-widget ui-corner-all share-note">Share</button>
-              <button class="ui-button ui-widget ui-corner-all delete-note">Delete</button>
+              <% if (!sharedView) { %><button class="pure-button pure-button-primary share-note">Share</button>
+              <button class="pure-button delete-note">Delete</button>
               <% } %>
             </div>
           <% }); %>
         <% } else if (notes.length === 0) { %>
                 <% if (sharedView) { %>
-            <p>Nobody's shared anything with ya. Sorry 'bout that.</p>
+            <div class="pure-u-1 gray"><p>Nobody's shared anything with you. Sorry 'bout that.</p></div>
                 <% } else { %>
-            <p>You've got no notes. Why don't ya make one?</p>
+            <div class="pure-u-1 gray"><p>You've got no notes. Why don't you make one?</p></div>
                 <% } %>
         <% } %>
-          </div>
+            </div>
     </script>
     <script type="text/html" id="create-note-template">
-      <form action="" method="post">
-        <label for="id_content">Content</label>
+      <form class="pure-form pure-form-stacked" action="" method="post">
         <textarea id="id_content" name="content"></textarea>
-        <input class="ui-button ui-widget ui-corner-all" type="submit" value="Add Note">
-        <input class="ui-button ui-widget ui-corner-all" type="reset" value="Cancel">
+        <input class="pure-button pure-button-primary" type="submit" value="Add Note">
+        <input class="pure-button pure-button-primary" type="reset" value="Cancel">
         {% csrf_token %}
       </form>
     </script>
     <script type="text/html" id="edit-note-template">
-      <form action="" method="post">
-        <label for="id_content">Content</label>
+      <form class="pure-form pure-form-stacked" action="" method="post">
         <textarea id="id_content" name="content"><%- note.get('content') %></textarea>
-        <input class="ui-button ui-widget ui-corner-all" type="submit" value="Edit Note">
-        <input class="ui-button ui-widget ui-corner-all" type="reset" value="Cancel">
+        <input class="pure-button pure-button-primary" type="submit" value="Edit Note">
+        <input class="pure-button pure-button-primary" type="reset" value="Cancel">
         {% csrf_token %}
       </form>
     </script>
     <script type="text/html" id="share-note-template">
-      <form action="" method="post">
-          <input id="search" placeholder="Search" type="search">
+      <form class="pure-form" action="" method="post">
+          <input id="search" placeholder="Search name or number" type="search">
+          <input class="pure-button pure-button-primary" placeholder="Cancel" type="reset">
         {% csrf_token %}
       </form>
     </script>
@@ -110,10 +125,10 @@
   </head>
   <body>
     <section id="content"></section>
-    <script src="{% static 'notes/vendor/jquery.js' %}"></script>
-    <script src="{% static 'notes/vendor/underscore.js' %}"></script>
-    <script src="{% static 'notes/vendor/backbone.js' %}"></script>
-    <script src="{% static 'notes/vendor/jquery-ui.js' %}"></script>
+    <script src="{% static 'notes/vendor/jquery.min.js' %}"></script>
+    <script src="{% static 'notes/vendor/underscore.min.js' %}"></script>
+    <script src="{% static 'notes/vendor/backbone.min.js' %}"></script>
+    <script src="{% static 'notes/vendor/jquery-ui.min.js' %}"></script>
     <script id="config" type="text/json">
       {
         "models": {},

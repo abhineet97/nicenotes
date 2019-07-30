@@ -14,10 +14,12 @@
     },
     home: function () {
       var view = new app.views.NotesView({el: this.contentElement});
+      this.header.render();
       view.render();
     },
     shared: function () {
       var view = new app.views.SharedView({el: this.contentElement})
+      this.header.render();
       view.render();
     },
     route: function (route, name, callback) {

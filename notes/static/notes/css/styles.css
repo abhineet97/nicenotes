@@ -1,0 +1,66 @@
+body {
+  padding: 0 1em;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 768px;
+}
+
+.delete-note {
+  color: white;
+  background: #ff1654;
+}
+
+.pure-button-primary, .custom-ui-dialog-titlebar {
+  background-color: #70c1b3;
+}
+
+.custom-menu-link {
+  padding: .5em 1em;
+}
+
+.no-close {
+  display: none;
+}
+
+.custom-menu-heading {
+  margin: 0 auto;
+  padding: .5em;
+  padding-left: 0;
+  color: #70c1b3;
+}
+
+.custom-menu-selected {
+  border-bottom: solid #70c1b3;
+}
+
+.custom-menu-selected > .pure-menu-link {
+  color: #70c1b3;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+}
+
+nav > li {
+  display: inline-block;
+}
+
+.note {
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 1em;
+}
+
+.gray {
+  color: gray;
+}
+
+@media screen and (min-width: 700px){
+ .custom-menu-list, .custom-menu-heading {
+   display: inline-block;
+ } 
+
+ .custom-menu-link {
+   padding: 1.5em;
+ }
+}

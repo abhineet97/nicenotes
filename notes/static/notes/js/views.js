@@ -18,15 +18,21 @@
     events: {
       'submit form': 'submit'
     },
-    errorTemplate: _.template('<span class="error"><%- msg %></span>'),
+    errorTemplate: _.template('<span class="pure-form-message error"><%- msg %></span>'),
     clearErrors: function () {
       $('.error', this.form).remove();
     },
     showDialog: function () {
       this.render();
-      var dialog = view.$el.dialog({
+      var dialog = this.$el.dialog({
         autoOpen: false, 
-        modal: true
+        modal: true,
+        width: 500,
+        classes: {
+          "ui-dialog": "ui-corner-all",
+          "ui-dialog-titlebar": "ui-corner-all custom-ui-dialog-titlebar",
+          "ui-dialog-titlebar-close": "no-close",
+        }
       });
       dialog.dialog('open');
     },
@@ -110,7 +116,8 @@
     events: {
       'click button.delete-note': 'removeNote',
       'click button.edit-note': 'editNote',
-      'click button.share-note': 'shareNote'
+      'click button.share-note': 'shareNote',
+      'click button#new-note': 'createNote'
     },
     templateName: '#notes-template',
     initialize: function (options) {
@@ -131,6 +138,14 @@
         },
         failure: function () {alert('Failed to delete note');}
       });
+    },
+    createNote: function(event) {
+      var self = this;
+      var view = new CreateNoteView();
+      event.preventDefault();
+      this.$el.after(view.el);
+      view.showDialog();
+      view.on('done', function () { self.render(); });
     },
     editNote: function (event) {
       var self = this;
@@ -213,8 +228,8 @@
   app.views.EditNoteView = EditNoteView;
 
   var UserListView = FormView.extend({
-    tagname: 'ul',
-    className: '.user-list',
+    tagName: 'ul',
+    className: 'user-list',
     userList: null,
     templateName: '#user-list-template',
     getContext: function () {
@@ -335,7 +350,6 @@
     templateName: '#header-template',
     events: {
       'click a#logout': 'logout',
-      'click a#new-note': 'renderAddForm'
     },
     getContext: function() {
       return {authenticated: app.session.authenticated()};
@@ -344,12 +358,6 @@
       e.preventDefault();
       app.session.delete();
       window.location = '/';
-    },
-    renderAddForm: function(event) {
-      var view = new CreateNoteView();
-      event.preventDefault();
-      this.$el.after(view.el);
-      view.showDialog();
     }
   });
   app.views.HeaderView = HeaderView;
