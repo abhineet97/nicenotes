@@ -22,6 +22,14 @@
     clearErrors: function () {
       $('.error', this.form).remove();
     },
+    showDialog: function () {
+      this.render();
+      var dialog = view.$el.dialog({
+        autoOpen: false, 
+        modal: true
+      });
+      dialog.dialog('open');
+    },
     showErrors: function (errors) {
       _.map(errors, function(fieldErrors, name) {
         var field = $(':input[name' + name + ']', this.form),
@@ -132,12 +140,7 @@
       view = new EditNoteView({model: note});
       event.preventDefault();
       this.$el.after(view.el);
-      view.render();
-      var dialog = view.$el.dialog({
-        autoOpen: false, 
-        modal: true
-      });
-      dialog.dialog('open');
+      view.showDialog();
       view.on('done', function () { self.render(); });
     },
     shareNote: function (event) {
@@ -209,6 +212,17 @@
   });
   app.views.EditNoteView = EditNoteView;
 
+  var UserListView = FormView.extend({
+    tagname: 'ul',
+    className: '.user-list',
+    userList: null,
+    templateName: '#user-list-template',
+    getContext: function () {
+      return {users: this.userList};
+    }
+  });
+  app.views.UserListView = UserListView;
+
   var ShareNoteView = FormView.extend({
     tagName: 'div',
     attributes: {
@@ -220,6 +234,7 @@
       'input #search': 'filterUserList'
     }, FormView.prototype.events),
     templateName: '#share-note-template',
+    listView: null,
     initialize: function (options) {
       var self = this;
       FormView.prototype.initialize.apply(this, arguments);
@@ -234,7 +249,6 @@
         view_access_to: self.model.get('view_access_to'),
         edit_access_to: self.model.get('edit_access_to')
       };
-      console.log(event);
       var access = $(event.currentTarget).val();
       attributes.view_access_to = _.without(attributes.view_access_to, Number(userid));
       attributes.edit_access_to = _.without(attributes.edit_access_to, Number(userid));
@@ -247,8 +261,15 @@
         fail: $.proxy(self.modelFailure, self)
       });
     },
+    filterUserList: function (event) {
+      query = $(event.currentTarget).val();
+      this.listView.userList = app.users.filter(function(user){
+        return user.get('mobile').toLowerCase().includes(query) ||
+          user.get('full_name').toLowerCase().includes(query);
+      });
+      this.listView.render();
+    },
     listUsers: function (collection, res, options) {
-      var self = this;
       _.each(collection.models, function (model) {
         if(this.model.get('edit_access_to').includes(model.get('id'))) {
           model.set({access: 'edit'});
@@ -257,13 +278,12 @@
         } else {
           model.set({access: 'none'});
         }
-      }, self);
-      self.render();
-      var dialog = self.$el.dialog({
-        autoOpen: false, 
-        modal: true
-      });
-      dialog.dialog('open');
+      }, this);
+      this.listView = new UserListView();
+      this.listView.userList = collection.models;
+      this.showDialog();
+      this.$el.children('form').append(this.listView.el);
+      this.listView.render();
     },
     submit: function (event) {
       var self = this,
@@ -279,7 +299,6 @@
       this.done();
     },
     getContext: function () {
-      return {users: app.users};
     }
   });
   app.views.ShareNoteView = ShareNoteView;
@@ -303,7 +322,6 @@
         note.access = 'view';
         app.notes.push(note);
       });
-      console.log(app.notes);
       this.render();
     },
     getContext: function () {
@@ -331,12 +349,7 @@
       var view = new CreateNoteView();
       event.preventDefault();
       this.$el.after(view.el);
-      view.render();
-      var dialog = view.$el.dialog({
-        autoOpen: false, 
-        modal: true
-      });
-      dialog.dialog('open');
+      view.showDialog();
     }
   });
   app.views.HeaderView = HeaderView;
