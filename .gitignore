@@ -1,0 +1,3 @@
+virtualenv 
+migrations 
+__pycache__ 

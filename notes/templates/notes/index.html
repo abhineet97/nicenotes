@@ -1,0 +1,136 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang=en class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>Nice Notes</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'notes/vendor/jquery-ui.css' %}">
+    <script type="text/html" id="login-template">
+        <h2>Login</h2>
+        <form action="" method="post">
+          <label for="id_username">Mobile</label>
+          <input id="id_username" type="text" maxlength="10" name="username" required>
+          <label for="id_password">Password</label>
+          <input id="id_password" type="password" name="password" required>
+          <input type="submit" value="Login">
+        </form>
+    </script>
+    <script type="text/html" id="register-template">
+        <h2>Register</h2>
+        <form action="" method="post">
+          <label for="id_mobile">Mobile</label>
+          <input id="id_mobile" type="text" maxlength="10" name="mobile" required>
+          <label for="id_full_name">Full Name</label>
+          <input id="id_full_name" type="text" maxlength="30" name="full_name" required>
+          <label for="id_password">Password</label>
+          <input id="id_password" type="password" name="password" required>
+          <input type="submit" value="Login">
+        </form>
+    </script>
+    <script type="text/html" id="header-template">
+      <h1>Nice Notes </h1>
+      <% if (authenticated) { %>
+        <nav>
+          <a id="new-note" href="#">Add Note</a>
+          <a href="#">Your Notes</a>
+          <a href="#shared">Shared Notes</a>
+          <a id="logout" href="#">Logout</a>
+        </nav>
+      <% } %>
+    </script>
+    <script type="text/html" id="notes-template">
+      <h2><%- title %></h2>
+          <div class="notes">
+        <% if (notes !== null && notes.length !== 0) { %>
+          <% _.each(notes.models, function(note){ %>
+            <div class="note" data-id="<%- note.get('id') %>">
+              <p class="content"><%- note.get('content') %></p>
+              <p>
+                <span>Created: <%- note.get('createdon') %></span>
+                <span>Modified: <%- note.get('modifiedon') %></span>
+              </p>
+              <% if (!sharedView || note.get('access') === 'edit') { %>
+              <button class="ui-button ui-widget ui-corner-all edit-note">Edit</button>
+              <% } %>
+              <% if (!sharedView) { %><button class="ui-button ui-widget ui-corner-all share-note">Share</button>
+              <button class="ui-button ui-widget ui-corner-all delete-note">Delete</button>
+              <% } %>
+            </div>
+          <% }); %>
+        <% } else if (notes.length === 0) { %>
+                <% if (sharedView) { %>
+            <p>Nobody's shared anything with ya. Sorry 'bout that.</p>
+                <% } else { %>
+            <p>You've got no notes. Why don't ya make one?</p>
+                <% } %>
+        <% } %>
+          </div>
+    </script>
+    <script type="text/html" id="create-note-template">
+      <form action="" method="post">
+        <label for="id_content">Content</label>
+        <textarea id="id_content" name="content"></textarea>
+        <input class="ui-button ui-widget ui-corner-all" type="submit" value="Add Note">
+        <input class="ui-button ui-widget ui-corner-all" type="reset" value="Cancel">
+        {% csrf_token %}
+      </form>
+    </script>
+    <script type="text/html" id="edit-note-template">
+      <form action="" method="post">
+        <label for="id_content">Content</label>
+        <textarea id="id_content" name="content"><%- note.get('content') %></textarea>
+        <input class="ui-button ui-widget ui-corner-all" type="submit" value="Edit Note">
+        <input class="ui-button ui-widget ui-corner-all" type="reset" value="Cancel">
+        {% csrf_token %}
+      </form>
+    </script>
+    <script type="text/html" id="share-note-template">
+      <form action="" method="post">
+        <input id="search" placeholder="Search" type="search">
+        <% if (users !== null && users.length !== 0) { %>
+        <ul>
+          <% _.each(users.models, function (user) { %>
+               <li data-user-id="<%- user.get('id') %>">
+                 <span class="mobile"><%- user.get('mobile') %></span>
+                 <span class="full_name"><%- user.get('full_name') %></span>
+              <select id="id_access" name="access">
+                <option value="none" <% if (user.get('access') === 'none') { %>selected<% } %>>None</option>
+                <option value="view" <% if (user.get('access') === 'view') { %>selected<% } %>>View</option>
+                <option value="edit" <% if (user.get('access') === 'edit') { %>selected<% } %>>Edit</option>
+              </select>
+               </li>
+          <% }) %>
+        </ul>
+        <% } %>
+        {% csrf_token %}
+      </form>
+    </script>
+  </head>
+  <body>
+    <section id="content"></section>
+    <script src="{% static 'notes/vendor/jquery.js' %}"></script>
+    <script src="{% static 'notes/vendor/underscore.js' %}"></script>
+    <script src="{% static 'notes/vendor/backbone.js' %}"></script>
+    <script src="{% static 'notes/vendor/jquery-ui.js' %}"></script>
+    <script id="config" type="text/json">
+      {
+        "models": {},
+        "collections": {},
+        "views": {},
+        "router": null,
+        "api": {
+          "me": "/api/users/me",
+          "users": "/api/users/",
+          "notes": "/api/notes/"
+        },
+        "apiLogin": "{% url 'api-token' %}"
+      }
+    </script>
+    <script src="{% static 'notes/js/app.js' %}"></script>
+    <script src="{% static 'notes/js/models.js' %}"></script>
+    <script src="{% static 'notes/js/views.js' %}"></script>
+    <script src="{% static 'notes/js/router.js' %}"></script>
+  </body>
+</html>
