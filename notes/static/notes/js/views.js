@@ -133,6 +133,7 @@
       event.preventDefault();
       note = app.notes.get(id);
       note.destroy({
+        wait: true,
         success: function(model, res) {
           self.render();
         },
