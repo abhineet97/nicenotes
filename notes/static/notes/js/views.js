@@ -228,7 +228,7 @@
   app.views.EditNoteView = EditNoteView;
 
   var UserListView = FormView.extend({
-    tagName: 'ul',
+    tagName: 'table',
     className: 'user-list',
     userList: null,
     templateName: '#user-list-template',
@@ -240,6 +240,7 @@
 
   var ShareNoteView = FormView.extend({
     tagName: 'div',
+    className: 'pure-table',
     attributes: {
       'title': 'Share Note'
     },
@@ -259,7 +260,7 @@
     },
     changeAccess: function(event) {
       var self = this,
-        userid = $(event.currentTarget).parent().attr('data-user-id');
+        userid = $(event.currentTarget).parent().parent().attr('data-user-id');
       var attributes = {
         view_access_to: self.model.get('view_access_to'),
         edit_access_to: self.model.get('edit_access_to')
@@ -297,7 +298,7 @@
       this.listView = new UserListView();
       this.listView.userList = collection.models;
       this.showDialog();
-      this.$el.children('form').append(this.listView.el);
+      this.$el.children('form').parent().append(this.listView.el);
       this.listView.render();
     },
     submit: function (event) {

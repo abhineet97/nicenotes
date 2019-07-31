@@ -103,24 +103,29 @@
     <script type="text/html" id="share-note-template">
       <form class="pure-form" action="" method="post">
           <input id="search" placeholder="Search name or number" type="search">
-          <input class="pure-button pure-button-primary" placeholder="Cancel" type="reset">
+          <input class="pure-button pure-button-primary" type="reset" value="Cancel">
         {% csrf_token %}
       </form>
     </script>
     <script type="text/html" id="user-list-template">
+      <thead><tr><th>Mobile</th><th>Full Name</th><th>Access</th></tr></thead>
+      <tbody>
       <% if (users !== null && users.length !== 0) { %>
           <% _.each(users, function (user) { %>
-               <li data-user-id="<%- user.get('id') %>">
-                 <span class="mobile"><%- user.get('mobile') %></span>
-                 <span class="full_name"><%- user.get('full_name') %></span>
+               <tr data-user-id="<%- user.get('id') %>">
+                 <td class="mobile"><%- user.get('mobile') %></td>
+                 <td class="full_name"><%- user.get('full_name') %></td>
+                 <td>
               <select id="id_access" name="access">
                 <option value="none" <% if (user.get('access') === 'none') { %>selected<% } %>>None</option>
                 <option value="view" <% if (user.get('access') === 'view') { %>selected<% } %>>View</option>
                 <option value="edit" <% if (user.get('access') === 'edit') { %>selected<% } %>>Edit</option>
               </select>
+              </td>
                </li>
           <% }) %>
         <% } %>
+        </tbody>
     </script>
   </head>
   <body>
