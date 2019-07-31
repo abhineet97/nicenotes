@@ -72,6 +72,9 @@
         e.preventDefault();
       }
       this.trigger('done');
+      if (this.$el.dialog('instance') !== undefined) {
+        this.$el.dialog('destroy');
+      }
       this.remove();
     }
   });
