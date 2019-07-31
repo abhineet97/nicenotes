@@ -9,7 +9,7 @@ User = get_user_model()
 
 class NoteSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(
-            default = serializers.CurrentUserDefault()
+            default = serializers.CreateOnlyDefault(serializers.CurrentUserDefault())
     )
 
     edit_access_to = serializers.PrimaryKeyRelatedField(
