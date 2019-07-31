@@ -41,7 +41,7 @@ class AccountsTest(APITestCase):
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.test_user_token)
         response = self.client.get(self.users_url)
-        users = User.objects.all()
+        users = User.objects.all().exclude(auth_token=self.test_user_token)
 
         self.assertEqual(User.objects.count(), 3)
         self.assertEqual(response.data, UserSerializer(users, many=True).data)
@@ -64,6 +64,6 @@ class AccountsTest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.test_user_token)
         response = self.client.get(self.current_user_url)
 
-        serialized = UserSerializer(User.objects.get(auth_token=self.test_user_token))
+        serialized = UserSerializer(User.objects.get(auth_token=self.test_user_token), show_access_only=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serialized.data)
