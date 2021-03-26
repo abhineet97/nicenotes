@@ -10,6 +10,7 @@ from .serializers import NoteSerializer
 
 User = get_user_model()
 
+
 class NoteTest(APITestCase):
     def setUp(self):
         self.list_url = reverse('note-list')
@@ -31,11 +32,11 @@ class NoteTest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token_key)
 
     def test_list_notes_of_current_user(self):
-        note1 = Note.objects.create(content='TESTING TESTING 123', owner=self.test_user)
-        note2 = Note.objects.create(content='TESTING TESTING 456', owner=self.test_user)
+        Note.objects.create(content='TESTING TESTING 123', owner=self.test_user)
+        Note.objects.create(content='TESTING TESTING 456', owner=self.test_user)
 
         # create a note by different user
-        note3 = Note.objects.create(content='TESTING TESTING 789', owner=self.test_user1)
+        Note.objects.create(content='TESTING TESTING 789', owner=self.test_user1)
 
         response = self.client.get(self.list_url, format='json')
         notes = Note.objects.filter(owner=self.test_user)
@@ -45,12 +46,11 @@ class NoteTest(APITestCase):
 
     def test_create_new_note_for_current_user(self):
         data = {'content': 'YOLOLOLOL'}
-        
+
         response = self.client.post(self.list_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['content'], data['content'])
-
 
     def test_update_content_of_existing_note_for_current_user(self):
         note = Note.objects.create(
@@ -76,7 +76,6 @@ class NoteTest(APITestCase):
                 'edit_access_to': [self.test_user1.id]
         }
         url = reverse('note-detail', kwargs={'pk': note.id})
-        
 
         response = self.client.patch(url, data)
 

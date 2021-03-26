@@ -1,9 +1,7 @@
-from rest_framework import status, permissions, viewsets
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import permissions, viewsets
 
-from .models import Note
 from .serializers import NoteSerializer
+
 
 class NoteViewSet(viewsets.ModelViewSet):
     """
@@ -12,7 +10,7 @@ class NoteViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     serializer_class = NoteSerializer
-    
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
@@ -23,7 +21,7 @@ class NoteViewSet(viewsets.ModelViewSet):
         qs3 = user.view_access_to.all()
 
         has_pk = bool(self.kwargs.get('pk', None) is not None)
-        if self.request.method == 'GET' and has_pk:  
+        if self.request.method == 'GET' and has_pk:
             return qs1 | qs3
         elif self.request.method == 'PUT' or self.request.method == 'PATCH':
             return qs1 | qs2

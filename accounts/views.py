@@ -1,13 +1,13 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import status, mixins, viewsets, permissions
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
 from .serializers import UserSerializer
 
 User = get_user_model()
+
 
 class IsAuthenticatedOrCreateOnly(permissions.BasePermission):
     """
@@ -16,17 +16,18 @@ class IsAuthenticatedOrCreateOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         return bool(
                 request.method == 'POST' or
-                request.user and 
+                request.user and
                 request.user.is_authenticated
         )
+
 
 class UserViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    #search_fields = ('full_name', User.USERNAME_FIELD)
-    
+    # search_fields = ('full_name', User.USERNAME_FIELD)
+
     permission_classes = [IsAuthenticatedOrCreateOnly]
-    #filter_backends = ()
+    # filter_backends = ()
 
     def list(self, request, *args, **kwargs):
         queryset = User.objects.exclude(auth_token=request.auth)
@@ -47,4 +48,3 @@ class UserViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.Gener
         queryset = User.objects.get(auth_token=request.auth)
         serializer = self.get_serializer(queryset, show_access_only=True)
         return Response(serializer.data)
-

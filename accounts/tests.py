@@ -9,6 +9,7 @@ from .serializers import UserSerializer
 
 User = get_user_model()
 
+
 class AccountsTest(APITestCase):
     def setUp(self):
         self.test_user = User.objects.create_user('1234567890', 'thisisapassword', full_name='Test_User')
@@ -36,8 +37,8 @@ class AccountsTest(APITestCase):
         self.assertEqual(response.data['token'], token.key)
 
     def test_list_users(self):
-        user1 = User.objects.create_user('0987654321', 'passingthepass', full_name='Dope Tester')
-        user2 = User.objects.create_user('1234509876', 'passthesauceplease', full_name='Happy Tester')
+        User.objects.create_user('0987654321', 'passingthepass', full_name='Dope Tester')
+        User.objects.create_user('1234509876', 'passthesauceplease', full_name='Happy Tester')
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.test_user_token)
         response = self.client.get(self.users_url)
@@ -47,7 +48,6 @@ class AccountsTest(APITestCase):
         self.assertEqual(response.data, UserSerializer(users, many=True).data)
         self.assertFalse('view_access_to' in response.data)
         self.assertFalse('edit_access_to' in response.data)
-        
 
     def test_user_login(self):
         data = {

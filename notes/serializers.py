@@ -1,15 +1,15 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
-from rest_framework.reverse import reverse
 
 from .models import Note
 
 User = get_user_model()
 
+
 class NoteSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(
-            default = serializers.CreateOnlyDefault(serializers.CurrentUserDefault())
+            default=serializers.CreateOnlyDefault(serializers.CurrentUserDefault())
     )
 
     edit_access_to = serializers.PrimaryKeyRelatedField(
@@ -35,4 +35,4 @@ class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = ['id', 'content', 'createdon', 'modifiedon', 'owner',
-                'edit_access_to', 'view_access_to']
+                  'edit_access_to', 'view_access_to']

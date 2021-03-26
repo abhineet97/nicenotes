@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+
 class CustomUserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -28,6 +29,7 @@ class CustomUserManager(BaseUserManager):
 
         return self._create_user(mobile, password, **extra_fields)
 
+
 class CustomUser(AbstractBaseUser):
     full_name = models.CharField(max_length=40)
     mobile = models.CharField(max_length=10, unique=True)
@@ -39,10 +41,9 @@ class CustomUser(AbstractBaseUser):
     REQUIRED_FIELD = ['full_name']
 
     objects = CustomUserManager()
-    
-    def get_full_name():
+
+    def get_full_name(self):
         return self.full_name
 
-    def get_short_name():
+    def get_short_name(self):
         return self.full_name
-

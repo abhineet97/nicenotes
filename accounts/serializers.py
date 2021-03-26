@@ -7,6 +7,7 @@ from notes.serializers import NoteSerializer
 
 User = get_user_model()
 
+
 class UserSerializer(serializers.ModelSerializer):
     mobile = serializers.CharField(
             required=True,
@@ -34,7 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
                 validated_data['mobile'],
                 validated_data['password'],
-                full_name = validated_data['full_name']
+                full_name=validated_data['full_name']
         )
         return user
 
