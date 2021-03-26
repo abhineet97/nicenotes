@@ -1,0 +1,30 @@
+version: '3'
+
+volumes:
+  postgres_data: {}
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    image: nicenotes_django
+    container_name: django
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.django
+      - ./.envs/.postgres
+    ports:
+      - "8000:8000"
+    command: '/wait-for postgres:5432 -- /start'
+
+  postgres:
+    image: postgres:11.11-alpine
+    container_name: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:Z
+    env_file:
+      - ./.envs/.postgres
