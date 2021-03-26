@@ -15,15 +15,44 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Note',
+            name="Note",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('createdon', models.DateTimeField(auto_now_add=True)),
-                ('modifiedon', models.DateTimeField(auto_now=True)),
-                ('content', models.TextField(blank=True, default='')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to=settings.AUTH_USER_MODEL)),
-                ('edit_access_to', models.ManyToManyField(blank=True, related_name='_note_edit_access_to_+', to=settings.AUTH_USER_MODEL)),
-                ('view_access_to', models.ManyToManyField(blank=True, related_name='_note_view_access_to_+', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("createdon", models.DateTimeField(auto_now_add=True)),
+                ("modifiedon", models.DateTimeField(auto_now=True)),
+                ("content", models.TextField(blank=True, default="")),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="+",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "edit_access_to",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="_note_edit_access_to_+",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "view_access_to",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="_note_view_access_to_+",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

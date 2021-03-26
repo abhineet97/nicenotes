@@ -7,6 +7,7 @@ class NoteViewSet(viewsets.ModelViewSet):
     """
     List the user's notes or create a new note.
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     serializer_class = NoteSerializer
@@ -20,10 +21,10 @@ class NoteViewSet(viewsets.ModelViewSet):
         qs2 = user.edit_access_to.all()
         qs3 = user.view_access_to.all()
 
-        has_pk = bool(self.kwargs.get('pk', None) is not None)
-        if self.request.method == 'GET' and has_pk:
+        has_pk = bool(self.kwargs.get("pk", None) is not None)
+        if self.request.method == "GET" and has_pk:
             return qs1 | qs3
-        elif self.request.method == 'PUT' or self.request.method == 'PATCH':
+        elif self.request.method == "PUT" or self.request.method == "PATCH":
             return qs1 | qs2
         else:
             return qs1

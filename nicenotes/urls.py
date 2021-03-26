@@ -21,32 +21,40 @@ from rest_framework.authtoken.views import obtain_auth_token
 from accounts.views import UserViewSet
 from notes.views import NoteViewSet
 
-note_list = NoteViewSet.as_view({
-        'get': 'list',
-        'post': 'create',
-})
+note_list = NoteViewSet.as_view(
+    {
+        "get": "list",
+        "post": "create",
+    }
+)
 
-note_detail = NoteViewSet.as_view({
-        'get': 'retrieve',
-        'put': 'update',
-        'patch': 'partial_update',
-        'delete': 'destroy',
-})
+note_detail = NoteViewSet.as_view(
+    {
+        "get": "retrieve",
+        "put": "update",
+        "patch": "partial_update",
+        "delete": "destroy",
+    }
+)
 
-user_list = UserViewSet.as_view({
-    'get': 'list',
-    'post': 'create',
-})
+user_list = UserViewSet.as_view(
+    {
+        "get": "list",
+        "post": "create",
+    }
+)
 
-user_detail = UserViewSet.as_view({
-    'get': 'retrieve',
-})
+user_detail = UserViewSet.as_view(
+    {
+        "get": "retrieve",
+    }
+)
 
 urlpatterns = [
-        path('api/token/', obtain_auth_token, name='api-token'),
-        path('api/users/', user_list, name='user-list'),
-        path('api/users/me/', user_detail, name='user-detail'),
-        path('api/notes/', note_list, name='note-list'),
-        path('api/notes/<int:pk>/', note_detail, name='note-detail'),
-        path('', TemplateView.as_view(template_name='notes/index.html'))
+    path("api/token/", obtain_auth_token, name="api-token"),
+    path("api/users/", user_list, name="user-list"),
+    path("api/users/me/", user_detail, name="user-detail"),
+    path("api/notes/", note_list, name="note-list"),
+    path("api/notes/<int:pk>/", note_detail, name="note-detail"),
+    path("", TemplateView.as_view(template_name="notes/index.html")),
 ]
