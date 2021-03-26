@@ -19,7 +19,7 @@ services:
       - ./.envs/.postgres
     ports:
       - "8000:8000"
-    command: '/wait-for postgres:5432 -- /start'
+    command: '/start'
 
   postgres:
     image: postgres:11.11-alpine

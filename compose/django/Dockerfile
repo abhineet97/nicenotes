@@ -11,10 +11,17 @@ RUN apt-get update && apt-get install -y netcat build-essential libpq-dev \
 COPY ./requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r /requirements.txt
 
+COPY ./compose/django/entrypoint /entrypoint
+RUN sed -i 's/\r$//g' /entrypoint
+RUN chmod +x /entrypoint
+
 COPY ./compose/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
+
 COPY ./compose/django/wait-for /wait-for
 RUN sed -i 's/\r$//g' /wait-for
 RUN chmod +x /wait-for
 WORKDIR /app
+
+ENTRYPOINT ["/entrypoint"]

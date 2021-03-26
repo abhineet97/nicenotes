@@ -80,13 +80,7 @@ WSGI_APPLICATION = "nicenotes.wsgi.application"
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    "default": env.db_url_config(
-        f"postgres://{env('POSTGRES_USER')}:"
-        f"{env('POSTGRES_PASSWORD')}@"
-        f"{env('POSTGRES_HOST')}:"
-        f"{env('POSTGRES_PORT')}/"
-        f"{env('POSTGRES_DB')}"
-    )
+    "default": env.db('DATABASE_URL')
 }
 
 # Password validation
